@@ -9,6 +9,7 @@
  apt-get install mosquitto
  python3 -m pip install pyserial
  python3 -m pip install paho-mqtt
+ python3 -m pip install typing_extensions
 """
 import os
 import time
@@ -75,7 +76,8 @@ room_h_dic = {
 
 
 def init_mqttc():
-    mqttc = mqtt.Client()
+    # mqttc = mqtt.Client()
+    mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     mqttc.on_message = mqtt_on_message
     mqttc.on_subscribe = mqtt_on_subscribe
     mqttc.on_connect = mqtt_on_connect
