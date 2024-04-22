@@ -48,9 +48,7 @@ device_t_dic = {
     "48": "fan",
 }
 cmd_t_dic = {"00": "state", "01": "on", "02": "off", "3a": "query"}
-room_t_dic = (
-    {"00": "livingroom", "01": "bedroom", "02": "room1", "03": "room2", "04": "room3"},
-)
+room_t_dic = {"00": "livingroom", "01": "bedroom", "02": "room1", "03": "room2", "04": "room3"}, 
 
 type_h_dic = {v: k for k, v in type_t_dic.items()}
 seq_h_dic = {v: k for k, v in seq_t_dic.items()}
@@ -776,7 +774,7 @@ def publish_discovery(dev, sub=""):
     elif dev == "light":
         for num in range(1, int(config.get("User", "light_count")) + 1):
             # ha_topic = 'homeassistant/light/kocom_livingroom_light1/config'
-            topic = "homeassistant/light/kocom_{}_light{}/config".format(num)
+            topic = "homeassistant/light/kocom_livingroom_light{}/config".format(num)
             payload = {
                 "name": "Kocom Livingroom Light{}".format(num),
                 "cmd_t": "kocom/livingroom/light/{}/command".format(num),
