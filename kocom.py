@@ -733,14 +733,23 @@ def packet_processor(p):
                 state = air_parse(p["value"])
             logtxt = "[MQTT publish|air] data[{}]".format(state)
             mqttc.publish("kocom/livingroom/air/state", json.dumps(state), retain=True)
+        # elif p["src"] == "light" and p["cmd"] == "state":
+        #     state = light_parse(p["value"])
+        #     logtxt = "[MQTT publish|light] room[{}] data[{}]".format(
+        #         p["src_room"], state
+        #     )
+        #     mqttc.publish(
+        #         "kocom/{}/light/state".format(p["src_room"]), json.dumps(state)
+        #     )
         elif p["src"] == "light" and p["cmd"] == "state":
             state = light_parse(p["value"])
-            logtxt = "[MQTT publish|light] room[{}] data[{}]".format(
-                p["src_room"], state
-            )
-            mqttc.publish(
-                "kocom/{}/light/state".format(p["src_room"]), json.dumps(state)
-            )
+            # 각 조명에 대한 상태를 개별적으로 발행
+            for light_id, light_state in state.items():
+                light_number = light_id.split("_")[1]  # 'light_1' -> '1'
+                topic_path = f"kocom/{p['src_room']}/light/{light_number}/state"
+                mqttc.publish(topic_path, json.dumps({"state": light_state}))
+                logtxt = f"[MQTT publish|light] room[{p['src_room']}] light[{light_number}] state[{light_state}]"
+                logging.info(logtxt)
         elif p["src"] == "fan" and p["cmd"] == "state":
             state = fan_parse(p["value"])
             logtxt = "[MQTT publish|fan] data[{}]".format(state)
